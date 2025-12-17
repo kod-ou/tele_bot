@@ -19,13 +19,13 @@ async def check_message_for_links(update: Update, context: ContextTypes.DEFAULT_
     username = update.effective_user.username or update.effective_user.first_name
 
     try:
-        settings_result = supabase.table('group_settings').select('link_moderation_enabled, max_warnings').eq('chat_id', chat_id).maybeSingle().execute()
+        settings_result = supabase.table('group_settings').select('link_moderation_enabled, max_warnings').eq('chat_id', chat_id).execute()
 
-        if not settings_result.data:
+        if not settings_result.data or len(settings_result.data) == 0:
             return
 
-        link_moderation_enabled = settings_result.data.get('link_moderation_enabled', True)
-        max_warnings = settings_result.data.get('max_warnings', 3)
+        link_moderation_enabled = settings_result.data[0].get('link_moderation_enabled', True)
+        max_warnings = settings_result.data[0].get('max_warnings', 3)
 
         if not link_moderation_enabled:
             return
@@ -39,10 +39,10 @@ async def check_message_for_links(update: Update, context: ContextTypes.DEFAULT_
         if URL_PATTERN.search(message.text):
             await message.delete()
 
-            warning_result = supabase.table('user_warnings').select('*').eq('user_id', user_id).eq('chat_id', chat_id).maybeSingle().execute()
+            warning_result = supabase.table('user_warnings').select('*').eq('user_id', user_id).eq('chat_id', chat_id).execute()
 
-            if warning_result.data:
-                new_count = warning_result.data['warning_count'] + 1
+            if warning_result.data and len(warning_result.data) > 0:
+                new_count = warning_result.data[0]['warning_count'] + 1
 
                 supabase.table('user_warnings').update({
                     'warning_count': new_count,

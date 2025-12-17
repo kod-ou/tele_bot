@@ -45,10 +45,10 @@ async def stats_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     try:
-        result = supabase.table('user_warnings').select('*').eq('user_id', user_id).eq('chat_id', chat_id).maybeSingle().execute()
+        result = supabase.table('user_warnings').select('*').eq('user_id', user_id).eq('chat_id', chat_id).execute()
 
-        if result.data:
-            warning_count = result.data.get('warning_count', 0)
+        if result.data and len(result.data) > 0:
+            warning_count = result.data[0].get('warning_count', 0)
             await update.message.reply_text(
                 f"⚠️ *Statistik Amaran Anda*\n\n"
                 f"Amaran: {warning_count}/3\n"

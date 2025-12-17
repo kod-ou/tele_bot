@@ -8,10 +8,10 @@ async def send_random_quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
 
     try:
-        settings_result = supabase.table('group_settings').select('quotes_enabled').eq('chat_id', chat_id).maybeSingle().execute()
+        settings_result = supabase.table('group_settings').select('quotes_enabled').eq('chat_id', chat_id).execute()
 
-        if settings_result.data:
-            quotes_enabled = settings_result.data.get('quotes_enabled', True)
+        if settings_result.data and len(settings_result.data) > 0:
+            quotes_enabled = settings_result.data[0].get('quotes_enabled', True)
             if not quotes_enabled:
                 await update.message.reply_text("Quote feature tidak aktif untuk group ini.")
                 return
@@ -39,10 +39,10 @@ async def send_random_quote(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def send_quote_to_chat(bot, chat_id):
     """Send a random quote to a specific chat (for scheduler)"""
     try:
-        settings_result = supabase.table('group_settings').select('quotes_enabled').eq('chat_id', chat_id).maybeSingle().execute()
+        settings_result = supabase.table('group_settings').select('quotes_enabled').eq('chat_id', chat_id).execute()
 
-        if settings_result.data:
-            quotes_enabled = settings_result.data.get('quotes_enabled', True)
+        if settings_result.data and len(settings_result.data) > 0:
+            quotes_enabled = settings_result.data[0].get('quotes_enabled', True)
             if not quotes_enabled:
                 return
 

@@ -10,10 +10,10 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
     chat_id = update.effective_chat.id
 
     try:
-        result = supabase.table('group_settings').select('welcome_message').eq('chat_id', chat_id).maybeSingle().execute()
+        result = supabase.table('group_settings').select('welcome_message').eq('chat_id', chat_id).execute()
 
-        if result.data:
-            welcome_message = result.data.get('welcome_message', 'Group ini akan bagi tips harian mana game yang muntah 🤑, lebih beratus ahli dalam group ini biasa kasi out hari-hari...')
+        if result.data and len(result.data) > 0:
+            welcome_message = result.data[0].get('welcome_message', 'Group ini akan bagi tips harian mana game yang muntah 🤑, lebih beratus ahli dalam group ini biasa kasi out hari-hari...')
         else:
             welcome_message = 'Group ini akan bagi tips harian mana game yang muntah 🤑, lebih beratus ahli dalam group ini biasa kasi out hari-hari...'
             supabase.table('group_settings').insert({
