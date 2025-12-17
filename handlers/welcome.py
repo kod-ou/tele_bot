@@ -13,9 +13,9 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
         result = supabase.table('group_settings').select('welcome_message').eq('chat_id', chat_id).maybeSingle().execute()
 
         if result.data:
-            welcome_message = result.data.get('welcome_message', 'Selamat datang ke group! Sila patuhi peraturan group.')
+            welcome_message = result.data.get('welcome_message', 'Group ini akan bagi tips harian mana game yang muntah 🤑, lebih beratus ahli dalam group ini biasa kasi out hari-hari...')
         else:
-            welcome_message = 'Selamat datang ke group! Sila patuhi peraturan group.'
+            welcome_message = 'Group ini akan bagi tips harian mana game yang muntah 🤑, lebih beratus ahli dalam group ini biasa kasi out hari-hari...'
             supabase.table('group_settings').insert({
                 'chat_id': chat_id,
                 'chat_title': update.effective_chat.title or '',
@@ -24,9 +24,9 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
         for new_member in update.message.new_chat_members:
             if not new_member.is_bot:
-                greeting = f"👋 Selamat datang {new_member.first_name}!\n\n{welcome_message}"
+                greeting = f"Selamat datang kepada {new_member.first_name} 🤑\n\n{welcome_message}"
                 await update.message.reply_text(greeting)
 
     except Exception as e:
         print(f"Error in welcome handler: {e}")
-        await update.message.reply_text("👋 Selamat datang ke group!")
+        await update.message.reply_text("Selamat datang ke group! 🤑")
