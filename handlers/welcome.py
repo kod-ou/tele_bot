@@ -24,9 +24,9 @@ async def welcome_new_member(update: Update, context: ContextTypes.DEFAULT_TYPE)
 
         for new_member in update.message.new_chat_members:
             if not new_member.is_bot:
-                greeting = f"Selamat datang kepada {new_member.first_name} 🤑\n\n{welcome_message}"
+                greeting = f"Selamat datang kepada {new_member.first_name} 🥳\n\n{welcome_message}"
                 await update.message.reply_text(greeting)
 
     except Exception as e:
         print(f"Error in welcome handler: {e}")
-        await update.message.reply_text("Selamat datang ke group! 🤑")
+        await update.message.reply_text("Selamat datang ke group! 🥳")
