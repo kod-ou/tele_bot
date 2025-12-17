@@ -19,7 +19,11 @@ Bot Telegram untuk menguruskan group dengan features seperti welcome message, mo
 pip install -r requirements.txt
 ```
 
-### 2. Configure Bot Token
+### 2. Configure Environment Variables
+
+Edit file `.env` dan masukkan credentials yang diperlukan:
+
+#### Telegram Bot Token
 
 Dapatkan Bot Token dari [@BotFather](https://t.me/BotFather) di Telegram:
 
@@ -28,11 +32,25 @@ Dapatkan Bot Token dari [@BotFather](https://t.me/BotFather) di Telegram:
 3. Ikuti arahan untuk create bot baru
 4. Copy Bot Token yang diberikan
 
-Edit file `.env` dan masukkan Bot Token:
-
 ```
 TELEGRAM_BOT_TOKEN=your_bot_token_here
 ```
+
+#### Supabase Service Role Key
+
+Bot memerlukan **Service Role Key** (bukan Anon Key) untuk bypass Row Level Security policies:
+
+1. Pergi ke [Supabase Dashboard](https://supabase.com/dashboard)
+2. Pilih project anda (zetgffumucclwevnkfww)
+3. Pergi ke **Settings** > **API**
+4. Di bahagian "Project API keys", copy **service_role** key (bukan anon key)
+5. Masukkan dalam `.env`:
+
+```
+VITE_SUPABASE_SERVICE_ROLE_KEY=your_service_role_key_here
+```
+
+**PENTING**: Service role key adalah secret dan hanya patut digunakan untuk backend services. Jangan sekali-kali expose key ini dalam frontend code atau commit ke public repository.
 
 ### 3. Setup Bot Permissions
 
@@ -117,6 +135,12 @@ WHERE chat_id = -1001234567890;
 **Scheduled messages tidak send?**
 - Check format time menggunakan 24-hour format (HH:MM)
 - Pastikan `is_active` adalah true
+
+**Error: "new row violates row-level security policy"**
+- Bot memerlukan Service Role Key untuk bypass RLS policies
+- Pastikan `VITE_SUPABASE_SERVICE_ROLE_KEY` sudah diset dalam `.env`
+- Dapatkan service role key dari Supabase Dashboard > Settings > API
+- Restart bot selepas update `.env` file
 
 ## Support
 
